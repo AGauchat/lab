@@ -26,7 +26,7 @@ except:
 
 
 #0-----------------------------------0
-#pixels = 2  message = "mensa" interleave = 0 output = "salida.ppm"
+#pixels = 2  message = "mensa" interleave = 1 output = "salida.ppm"
 class Esteganografia():
     def __init__(self):
         self.a = 0
@@ -106,7 +106,7 @@ class Esteganografia():
                         self.imageInt[self.offs + self.a] = int(bitas)
                         self.volv()
                     else:
-                        self.a += 3 * (args.interleave + 1)
+                        self.a += 3 * (args.interleave)
                         self.cont += 1
                         bit = tobits(str(self.imageInt[self.offs]), self.mens[i])
                         bitas = frombits(bit)
