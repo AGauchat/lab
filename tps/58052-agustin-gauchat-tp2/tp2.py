@@ -7,6 +7,7 @@ import threading
 from frombit import frombits
 from tobit import tobits
 from mensaje import mensa
+from rot13 import *
 
 #0-------------argumentos----------------------0
 try:
@@ -15,6 +16,7 @@ try:
     parser.add_argument('-s', '--size', type=int, help='Bloque de lectura')
     parser.add_argument('-f', '--file', help='Archivo a procesar')
     parser.add_argument('-m', '--message', help='Mensaje Esteganográfico')
+    parser.add_argument('-c', '--cifrado', action="store_true", help='cifrar el mensaje')
     parser.add_argument('-p', '--pixels', type=int, help='offset en pixels del inicio del raster')
     parser.add_argument('-i', '--interleave', type=int, help='interleave de modificacion en pixel')
     parser.add_argument('-o', '--output', help='estego-mensaje')
@@ -23,10 +25,9 @@ try:
 except:
     print("ERROR - Argumentos invalidos")
     exit(2)
-
-
+    
 #0-----------------------------------0
-#pixels = 2  message = "mensa" interleave = 1 output = "salida.ppm"
+
 class Esteganografia():
     def __init__(self):
         self.a = 0
@@ -44,8 +45,8 @@ class Esteganografia():
     #0---------------mensaje--------------------0
     def MensajeBit(self):
         try:
-            self.mens = mensa(args.message)[0]
-            self.sis = mensa(args.message)[1]
+            self.mens = mensa(args.message, args.cifrado)[0]
+            self.sis = mensa(args.message, args.cifrado)[1]
             self.offs = args.pixels * 3
         except:
             print("ERROR - No se encontro el mensaje")
@@ -72,14 +73,24 @@ class Esteganografia():
 
             #Guardo el header y el body
             self.header = ""
-            for i in imagen[:finHeader].decode():
-                if i == "6":
-                    if len(str(self.sis)) >= 3:
-                        self.header += "6\n#UMCOMPU2" + " " + str(self.offs) + " " + "2" + " " + str(self.sis)
-                    else:
-                        self.header += "6\n#UMCOMPU2" + " " + str(self.offs) + " " + "2" + " " + str(self.sis) + " "
+
+            for letra in imagen[:finHeader].decode():
+                if (letra == "6" and args.cifrado == True):
+                    self.header += "6\n#UMCOMPU2" + "C" + " " + str(args.pixels) + " " + str(args.interleave) + " " + str(self.sis)
+                elif (letra == "6"):
+                    self.header += "6\n#UMCOMPU2 " + str(args.pixels) + " " + str(args.interleave) + " " + str(self.sis) + " "
                 else:
-                    self.header += i
+                    self.header += letra
+
+            # for i in imagen[:finHeader].decode():
+            #     if i == "6":
+            #         if len(str(self.sis)) >= 3:
+            #             self.header += "6\n#UMCOMPU2" + " " + str(self.offs) + " " + "2" + " " + str(self.sis)
+            #         else:
+            #             self.header += "6\n#UMCOMPU2" + " " + str(self.offs) + " " + "2" + " " + str(self.sis) + " "
+            #     else:
+            #         self.header += i
+
             self.body = imagen[finHeader:]
 
             #Pixeles a int
@@ -101,14 +112,23 @@ class Esteganografia():
                     self.imageInt[self.offs] = int(bitas)
                 else:
                     if self.cont == 2:
-                        bit = tobits(str(self.imageInt[self.offs]), self.mens[i])
-                        bitas = frombits(bit)
-                        self.imageInt[self.offs + self.a] = int(bitas)
-                        self.volv()
+                        if (args.interleave != 1):
+                            self.offs = self.offs + self.a + ((args.interleave - 1) * 3)
+                            self.a = 0
+                            bit = tobits(str(self.imageInt[self.offs]), self.mens[i])
+                            bitas = frombits(bit)
+                            self.imageInt[self.offs] = int(bitas)
+                            self.volv()
+                        else:
+                            bit = tobits(str(self.imageInt[self.offs + self.a]), self.mens[i])
+                            bitas = frombits(bit)
+                            self.imageInt[self.offs + self.a] = int(bitas)
+                            self.volv()
+
                     else:
-                        self.a += 3 * (args.interleave)
+                        self.a += (3 * args.interleave) 
                         self.cont += 1
-                        bit = tobits(str(self.imageInt[self.offs]), self.mens[i])
+                        bit = tobits(str(self.imageInt[self.offs + self.a]), self.mens[i])
                         bitas = frombits(bit)
                         self.imageInt[self.offs + self.a] = int(bitas)
                 self.offs += 1
@@ -153,8 +173,6 @@ class Esteganografia():
         except:
             print("ERROR - No se pudo iniciar el programa")
             exit(2)
-
-
 
 obj = Esteganografia()
 
