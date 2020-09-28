@@ -48,6 +48,9 @@ class Esteganografia():
             self.mens = mensa(args.message, args.cifrado)[0]
             self.sis = mensa(args.message, args.cifrado)[1]
             self.offs = args.pixels * 3
+
+            if(self.sis > os.path.getsize(args.file)):
+                raise "ERROR - El mensaje es demasiado grande."
         except:
             print("ERROR - No se encontro el mensaje")
             exit(2)
@@ -131,6 +134,7 @@ class Esteganografia():
                         bit = tobits(str(self.imageInt[self.offs + self.a]), self.mens[i])
                         bitas = frombits(bit)
                         self.imageInt[self.offs + self.a] = int(bitas)
+                        
                 self.offs += 1
         except:
             print("ERROR - No se pudo completar la nueva imagen")

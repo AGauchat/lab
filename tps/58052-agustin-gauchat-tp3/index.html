@@ -1,0 +1,61 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+        <TITLE>TP 3</TITLE>
+    </head>
+    <body style="margin-left: 20px">
+        <h1 style="text-align:center;">Bienvenido</h1>
+
+        <p>Ingrese nombre del archivo y seleccione el formato:</p>
+
+        <input style="float: left; width: 200px" class="form-control" id="NombreSinFormato" />
+
+        <select class="form-control" style="width: 90px;" id="Formato">
+            <option value="jpg">JPG</option>
+            <option value="ppm">PPM</option>
+            <option value="PDF">PDF</option>
+            <option value="txt">TXT</option>
+            <option value="html">HTML</option>
+        </select>
+
+        <div id="EstiloPPM" style="display: none;">
+            <br />
+            <input type="radio" checked name="tipo" value="red">Rojo
+            <input type="radio" name="tipo" value="blue">Azul
+            <input type="radio" name="tipo" value="green">Verde
+            <input type="radio" name="tipo" value="b&w">ByN
+            
+            <br />
+            <p style="float: left; margin-top: 5px;">Intensidad:</p> <input step="any" style="width: 200px" class="form-control" type="number" id="intensidad" />
+            <br />
+        </div>
+
+        
+
+        <button style="margin-top: 5px;" onclick="Redireccionar();" class="btn btn-secondary">Enviar</button>
+
+    </body>
+    </body>
+</html>
+
+<script>
+    function Redireccionar(){
+        if($('#Formato').val() == "ppm"){
+            location.href='/' + $('#NombreSinFormato').val() + '.' + $('#Formato').val() + '?' + $('input:radio[name=tipo]:checked').val() + '=' + $('#intensidad').val()
+        }else{
+            location.href='/' + $('#NombreSinFormato').val() + '.' + $('#Formato').val()
+        }
+    };
+</script>
+
+<script>
+    $('#Formato').change(function() {
+        if($('#Formato').val() == "ppm"){
+            $("#EstiloPPM").css("display", "block");
+        }else{
+            $("#EstiloPPM").css("display", "none");
+        }
+    });
+</script>
