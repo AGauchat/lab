@@ -116,6 +116,6 @@ class Filtro():
 
 # TESTING#
 # if __name__ == "__main__":
-#     obj = Filtro('dog.ppm', 'b&w', 1, 1000)
+#     obj = Filtro('/home/agustin/Computacion II/lab/tps/58052-agustin-gauchat-tp3/dog.ppm', 'b&w', 1, 1000)
 #     newImg = open('f_dog.ppm', 'wb')
 #     newImg.write(obj.main())

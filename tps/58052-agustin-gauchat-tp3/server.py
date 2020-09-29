@@ -32,7 +32,7 @@ class Handler(socketserver.BaseRequestHandler):
                         intensidad = archivo.split("?")[1].split("=")[1]
                         archivo = archivo.split("?")[0]
                         
-                        imagen = Filtro(archivo, color, str(intensidad), 255).main()
+                        imagen = Filtro(archivo, color, str(intensidad), args.size[0]).main()
 
                         image = open("/home/agustin/Computacion II/lab/tps/58052-agustin-gauchat-tp3/temp.ppm", "wb")
                         image.write(imagen)
@@ -56,7 +56,7 @@ class Handler(socketserver.BaseRequestHandler):
             except:
                 archivo = '/home/agustin/Computacion II/lab/tps/58052-agustin-gauchat-tp3/404error.html'
                 extension = 'html'
-                    
+                
                 fd = os.open(archivo, os.O_RDONLY)
                 body = os.read(fd, os.path.getsize(archivo))
                 os.close(fd)
@@ -72,7 +72,7 @@ class Handler(socketserver.BaseRequestHandler):
 parser = argparse.ArgumentParser(description='Tp3 - Servidor', usage='./server.py -r [ruta de documentos] -p [puerto] -s [bloque de lectura]')
 parser.add_argument('-r', '--root', type=str, help='Ruta', default='/root')
 parser.add_argument('-p', '--port', type=int, nargs=1, help='Puerto', default=[8081])
-parser.add_argument('-s', '--size', type=int, help='Bloque de lectura', default=[255])
+parser.add_argument('-s', '--size', type=int, nargs=1, help='Bloque de lectura', default=[255])
 
 args = parser.parse_args()
 
