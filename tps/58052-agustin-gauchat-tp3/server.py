@@ -32,7 +32,7 @@ class Handler(socketserver.BaseRequestHandler):
                         intensidad = archivo.split("?")[1].split("=")[1]
                         archivo = archivo.split("?")[0]
                         
-                        imagen = Filtro(archivo, color, str(intensidad), args.size[0]).main()
+                        imagen = Filtro(archivo, color, float(intensidad), args.size[0]).main()
 
                         image = open("/home/agustin/Computacion II/lab/tps/58052-agustin-gauchat-tp3/temp.ppm", "wb")
                         image.write(imagen)
@@ -70,8 +70,8 @@ class Handler(socketserver.BaseRequestHandler):
 # server.serve_forever()
 
 parser = argparse.ArgumentParser(description='Tp3 - Servidor', usage='./server.py -r [ruta de documentos] -p [puerto] -s [bloque de lectura]')
-parser.add_argument('-r', '--root', type=str, help='Ruta', default='/root')
-parser.add_argument('-p', '--port', type=int, nargs=1, help='Puerto', default=[8081])
+parser.add_argument('-r', '--root', type=str, help='Ruta', default='/Escritorio')
+parser.add_argument('-p', '--port', type=int, nargs=1, help='Puerto', default=[8080])
 parser.add_argument('-s', '--size', type=int, nargs=1, help='Bloque de lectura', default=[255])
 
 args = parser.parse_args()
